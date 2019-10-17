@@ -21,5 +21,5 @@ python3
 # 実行
 
 ```
-$python3 VCinout.py
+$python3 DCbot.py
 ```
