@@ -74,7 +74,7 @@ class SetsugekkaBot(discord.Client):
                 await msgme.add_reaction(emj[2])
                 await msgme.add_reaction(emj[3])
                 await msgme.add_reaction(emj[4])
-                msgv = await message.channel.send('Ba')
+                msgv = await message.channel.send('Va')
                 await msgv.add_reaction(emj[1])
                 await msgv.add_reaction(emj[2])
                 await msgv.add_reaction(emj[3])
