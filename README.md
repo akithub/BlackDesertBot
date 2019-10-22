@@ -27,15 +27,17 @@ python3
     ```
 2. config file の作成
     ```
-    $cp config_tp.py config.py
+    $cp config_tp.ini config.ini
     ```
 3. config の中身を記述する
 
 GUILD_ID を記入する。
 IDは該当のサーバを右クリックし、メニュー -> IDをコピー でクリップボードにコピーできる。
 
-```py
-GUILD_ID = # 用いるサーバのID
+```ini
+[General]
+token=    # Botのトークン
+guild_id= # サーバのID (int)
 ```
 
 # 実行
@@ -50,12 +52,13 @@ $python3 DCbot.py
 
 ### VCチャンネル入退室通知
 
-config.pyにて以下を指定する。
+config.iniにて以下を指定する。
 IDは該当のチャンネルを右クリックし、メニュー -> IDをコピー でクリップボードにコピーできる。
 
-```py
-TARGET_TEXT_CHANNEL_ID  =   # 通知を書き出すテキストチャンネルのID (int)
-TARGET_VOICE_CHANNEL_ID =   # 入退室を検知するボイスチャンネルのID (int)
+```ini
+[Voice inout]
+output_channel_id= # 通知を書き出すテキストチャンネルのID (int)
+voice_channel_id=  # 入退室を検知するボイスチャンネルのID (int)
 ```
 
 ## コマンド系
