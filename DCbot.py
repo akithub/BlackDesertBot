@@ -4,7 +4,7 @@ import discord
 import ConfigCog
 from Cogs import *
 
-class SetsugekkaBot(commands.Bot):
+class DCbot(commands.Bot):
     def __init__(self, command_prefix):
         super().__init__(command_prefix)
         self.load_extension('ConfigCog')
@@ -17,6 +17,6 @@ class SetsugekkaBot(commands.Bot):
         print('bot ready')
 
 if __name__ == '__main__':
-    client = SetsugekkaBot(command_prefix='+')
+    client = DCbot(command_prefix='+')
     token =  client.config.get('General', 'token')
     client.run(token)
