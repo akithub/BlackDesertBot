@@ -1,14 +1,17 @@
 from discord.ext import commands
 
 import discord
+import logging
+
+logger = logging.getLogger(__name__)
 
 class VCinout(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = bot.get_cog('Config').config
-        self.guild_id = int(self.config.get('General', "guild_id"))
-        self.output_channel_id = int(self.config.get('Voice inout', "output_channel_id"))
-        self.voice_channel_id = int(self.config.get('Voice inout', "voice_channel_id"))
+        self.config = bot.get_cog('Config').config['VOICE_INOUT']
+        self.guild_id = self.config.getint("guild_id")
+        self.output_channel_id = self.config.getint("output_channel_id")
+        self.voice_channel_id = self.config.getint("voice_channel_id")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):

@@ -1,14 +1,22 @@
 from discord.ext import commands
 
-import configparser
+from configparser import ConfigParser
+import os
+
+import logging
+import logging.handlers
+from logging import getLogger, Filter, DEBUG, INFO
 
 class Config(commands.Cog):
-    def __init__(self, bot, config_path):
+    def __init__(self, bot):
         self.bot = bot
-        self.read_config(config_path)
-    def read_config(self, config_path):
-        self.config = configparser.ConfigParser()
-        self.config.read(config_path)
+        self._config = None
+    @property
+    def config(self):
+        return self._config
+    @config.setter
+    def config(self, config:ConfigParser):
+        self._config = config
 
 def setup(bot):
-    bot.add_cog(Config(bot, 'config.ini'))
+    bot.add_cog(Config(bot))
