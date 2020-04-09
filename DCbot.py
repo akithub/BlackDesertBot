@@ -86,6 +86,7 @@ class DCbot(commands.Bot):
         self.get_cog('Config').config = config_parser
         self.load_extension('Cogs.Kujira')
         self.load_extension('Cogs.VCinout')
+        self.load_extension('Cogs.Note')
 
     async def on_ready(self):
         # print('Logged on as {{0}} (ID: {{0.id}})'.format(self.user))
