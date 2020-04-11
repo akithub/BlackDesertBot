@@ -1,10 +1,10 @@
-# SetsugekkaBot
+# BlackDesertBot
 
 BlackDesert 用の bot
 
 # 目次
 
-- [SetsugekkaBot](#setsugekkabot)
+- [BlackDesertBot](#blackdesertbot)
 - [目次](#%e7%9b%ae%e6%ac%a1)
 - [環境](#%e7%92%b0%e5%a2%83)
 - [導入](#%e5%b0%8e%e5%85%a5)
