@@ -25,7 +25,9 @@ class Note(commands.Cog):
                 content = '\n'.join([f"{d.get('title')}" for d in result])
                 await ctx.send("この辺にない？\n" +"-"*20 + "\n" + content)
             return
-        await ctx.send(f"{result[0].get('content')}")
+        embed = discord.Embed()
+        embed.add_field(name=f"{result[0].get('title')}", value=f"{result[0].get('content')}", inline=False)
+        await ctx.send(embed=embed)
 
     @commands.group()
     async def note(self, ctx):
@@ -49,8 +51,10 @@ class Note(commands.Cog):
         if not result.count():
             await ctx.send("そんなタグないよ")
             return
-        content = '\n'.join([f"{d.get('title')}: {d.get('content')}" for d in result])
-        await ctx.send(content)
+        embed = discord.Embed()
+        for d in result:
+            embed.add_field(name=f"{d.get('title')}", value=f"{d.get('content')}", inline=False)
+        await ctx.send(embed=embed)
     @note.command()
     async def replace(self, ctx, title:str, content:str, tags:str=''):
         logger.debug("memo replace is invoked")
@@ -63,8 +67,10 @@ class Note(commands.Cog):
         if not result.count():
             await ctx.send('何も登録されてないよ')
             return
-        content = '\n'.join([f"{d.get('title')}: {d.get('content')}" + f"(tag: {d.get('tags')})" for d in result])
-        await ctx.send(content)
+        embed = discord.Embed()
+        for d in result:
+            embed.add_field(name=f"{d.get('title')}", value=f"{d.get('content')}"+f"(tag: {d.get('tags')})", inline=False)
+        await ctx.send(embed=embed)
     @note.command(aliases=['d', 'del'])
     async def delete(self, ctx, title:str):
         logger.debug("memo delete is invoked")
