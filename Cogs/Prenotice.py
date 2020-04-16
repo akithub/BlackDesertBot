@@ -15,7 +15,7 @@ class Prenotice(commands.Cog):
         self.schedules = []
         self.read_json('wb.json')
     def read_json(self, file_path):
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
         for read_schedule in json_data.get("schedule"):
             advances = json_data.get('advance')
