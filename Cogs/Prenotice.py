@@ -59,11 +59,21 @@ class Prenotice(commands.Cog):
             value = prenotice.get('value')
         embed.add_field(name=prenotice.get('boss'),value=value)
         embed.set_thumbnail(url=prenotice.get("thumbnail"))
-        await channel.send(embed=embed)
+        msg = await channel.send(embed=embed)
+        if advance <= 10:
+            for c in range(1,advance+1):
+                await asyncio.sleep(0.8)
+                embed.remove_field(0)
+                value = f'出現 {advance - c} 秒前'
+                if advance == c:
+                    value = f'**出現！**'
+                embed.add_field(name=prenotice.get('boss'),value=value)
+                await msg.edit(embed=embed)
+        await asyncio.sleep(180)
+        await msg.delete()
         self.reserved.remove(prenotice)
     @commands.Cog.listener()
     async def on_ready(self):
         await self.loop.start()
-
 def setup(bot):
     bot.add_cog(Prenotice(bot))
