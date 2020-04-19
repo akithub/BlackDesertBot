@@ -44,9 +44,9 @@ class Prenotice(commands.Cog):
             delta = target_seconds - current_seconds
             if delta > 0 and delta < 310:
                 logger.debug(f"ensured task: {prenotice}")
-                asyncio.ensure_future(self.send_prenotice(prenotice, delta))
+                asyncio.ensure_future(self.send_boss_prenotice(prenotice, delta))
 
-    async def send_prenotice(self, prenotice, delay:int):
+    async def send_boss_prenotice(self, prenotice, delay:int):
         self.reserved.append(prenotice)
         logger.debug(f"{prenotice} is append reserved list")
         await asyncio.sleep(delay)
@@ -65,8 +65,9 @@ class Prenotice(commands.Cog):
                 await asyncio.sleep(0.8)
                 embed.remove_field(0)
                 value = f'出現 {advance - c} 秒前'
+                exp = '\n 撃ち方用意！'if prenotice.get('boss') == 'ベル' else ''
                 if advance == c:
-                    value = f'**出現！**'
+                    value = f'**出現！**{}'.format(exp)
                 embed.add_field(name=prenotice.get('boss'),value=value)
                 await msg.edit(embed=embed)
         await asyncio.sleep(180)
