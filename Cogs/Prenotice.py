@@ -27,6 +27,18 @@ class Prenotice(commands.Cog):
                 schedule["advance"] = advance
                 if schedule not in self.schedules:
                     self.schedules.append(schedule)
+    @classmethod
+    def next_prenotice_datetime(cls, now:datetime, prenotice):
+        prenotice_time = datetime(now.year,
+                            now.month,
+                            now.day + prenotice.get('weekday') - now.weekday(),
+                            prenotice.get('hour'),
+                            prenotice.get('minute'),
+                            0)
+        if prenotice_time - now < timedelta(0):
+            prenotice_time += timedelta(days=7)
+        return prenotice_time
+
     @commands.command()
     async def prenotice(self, ctx):
         pass
@@ -34,17 +46,15 @@ class Prenotice(commands.Cog):
     async def loop(self):
         for prenotice in self.schedules:
             now = datetime.now()
-            if not now.weekday() == prenotice.get("weekday"):
-                continue
             if prenotice in self.reserved: 
                 logger.debug(f"prenotice: {prenotice} is already reserved")
                 continue
-            target_seconds = prenotice.get("hour")*3600+prenotice.get("minute")*60 - prenotice.get("advance")
-            current_seconds= now.hour*3600+now.minute*60+now.second
-            delta = target_seconds - current_seconds
-            if delta > 0 and delta < 310:
+            prenotice_time = self.next_prenotice_datetime(now, prenotice)
+            delta = prenotice_time - now
+            if delta < timedelta(seconds=310):
+                logger.debug(f'delta time:{delta}')
                 logger.debug(f"ensured task: {prenotice}")
-                asyncio.ensure_future(self.send_boss_prenotice(prenotice, delta))
+                asyncio.ensure_future(self.send_boss_prenotice(prenotice, delta.total_seconds() - prenotice.get('advance')))
 
     async def send_boss_prenotice(self, prenotice, delay:int):
         self.reserved.append(prenotice)
@@ -59,7 +69,7 @@ class Prenotice(commands.Cog):
             value = prenotice.get('value')
         embed.add_field(name=prenotice.get('boss'),value=value)
         embed.set_thumbnail(url=prenotice.get("thumbnail"))
-        msg = await channel.send(embed=embed)
+        msg = await channel.send(embed=embed, delete_after=300)
         if advance <= 10:
             for c in range(1,advance+1):
                 await asyncio.sleep(0.8)
@@ -67,11 +77,9 @@ class Prenotice(commands.Cog):
                 value = f'出現 {advance - c} 秒前'
                 exp = '\n 撃ち方用意！'if prenotice.get('boss') == 'ベル' else ''
                 if advance == c:
-                    value = f'**出現！**{}'.format(exp)
+                    value = '**出現！**{}'.format(exp)
                 embed.add_field(name=prenotice.get('boss'),value=value)
                 await msg.edit(embed=embed)
-        await asyncio.sleep(180)
-        await msg.delete()
         self.reserved.remove(prenotice)
     @commands.Cog.listener()
     async def on_ready(self):
