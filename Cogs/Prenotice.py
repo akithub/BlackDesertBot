@@ -70,7 +70,7 @@ class Prenotice(commands.Cog):
             self.next_boss = [prenotice for prenotice in self.json_data.get('schedule') if self.next_prenotice_datetime(now, prenotice) - now == min_delta]
             for prenotice in self.next_boss:
                 await self.set_next_boss(prenotice, min_delta.total_seconds())
-            asyncio.sleep(min_delta.total_seconds())
+            await asyncio.sleep(min_delta.total_seconds())
             logger.debug("boss list clear")
             self.next_boss = []
     async def send_boss_prenotice(self, prenotice, delay:int):
