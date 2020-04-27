@@ -104,7 +104,7 @@ class Prenotice(commands.Cog):
         logger.debug(f"delete_after: {delete_after}s, type: {type(delete_after)}")
         thumbnail = self.json_data.get("boss").get(prenotice.get("boss"))
         embed = discord.Embed(title="次ボス")
-        embed.add_field(name=f"{prenotice.get('hour')} : {prenotice.get('minute')}", value=f"**{prenotice.get('boss')}**")
+        embed.add_field(name=f"{prenotice.get('hour')} : {prenotice.get('minute'):02}", value=f"**{prenotice.get('boss')}**")
         embed.set_thumbnail(url=thumbnail)
         msg = await channel.send(embed=embed, delete_after=delete_after)
         pass
