@@ -13,17 +13,19 @@ class Prenotice(commands.Cog):
         self.config = bot.get_cog('Config').config['PRENOTICE']
         self.reserved = []
         self.schedules = []
+        self.json_data = []
+        self.next_boss = []
         self.read_json('wb.json')
     def read_json(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
-            json_data = json.load(f)
-        for read_schedule in json_data.get("schedule"):
-            advances = json_data.get('advance')
+            self.json_data = json.load(f)
+        for read_schedule in self.json_data.get("schedule"):
+            advances = self.json_data.get('advance')
             if 'advance' in read_schedule.keys():
                 advances = read_schedule.get('advance')
             for advance in advances:
                 schedule = read_schedule.copy()
-                schedule["thumbnail"] = json_data.get("boss").get(schedule.get("boss"))
+                schedule["thumbnail"] = self.json_data.get("boss").get(schedule.get("boss"))
                 schedule["advance"] = advance
                 if schedule not in self.schedules:
                     self.schedules.append(schedule)
@@ -31,19 +33,25 @@ class Prenotice(commands.Cog):
     def next_prenotice_datetime(cls, now:datetime, prenotice):
         prenotice_time = datetime(now.year,
                             now.month,
-                            now.day + prenotice.get('weekday') - now.weekday(),
+                            now.day,
                             prenotice.get('hour'),
                             prenotice.get('minute'),
                             0)
+        prenotice_time +=  timedelta(days=prenotice.get('weekday') - now.weekday())
         if prenotice_time - now < timedelta(0):
             prenotice_time += timedelta(days=7)
+        if prenotice_time < now:
+            logger.error(f"prenotice is past: {prenotice_time} < {now}")
         return prenotice_time
 
     @commands.command()
     async def prenotice(self, ctx):
+        await self.do_loop()
         pass
     @tasks.loop(minutes=5)
     async def loop(self):
+        await self.do_loop()
+    async def do_loop(self):
         for prenotice in self.schedules:
             now = datetime.now()
             if prenotice in self.reserved: 
@@ -55,12 +63,21 @@ class Prenotice(commands.Cog):
                 logger.debug(f'delta time:{delta}')
                 logger.debug(f"ensured task: {prenotice}")
                 asyncio.ensure_future(self.send_boss_prenotice(prenotice, delta.total_seconds() - prenotice.get('advance')))
-
+        if not self.next_boss:
+            now = datetime.now()
+            logger.debug("into boss nxt")
+            min_delta = min([self.next_prenotice_datetime(now, prenotice) - now for prenotice in self.json_data.get('schedule')])
+            self.next_boss = [prenotice for prenotice in self.json_data.get('schedule') if self.next_prenotice_datetime(now, prenotice) - now == min_delta]
+            for prenotice in self.next_boss:
+                await self.set_next_boss(prenotice, min_delta.total_seconds())
+            asyncio.sleep(min_delta.total_seconds())
+            logger.debug("boss list clear")
+            self.next_boss = []
     async def send_boss_prenotice(self, prenotice, delay:int):
         self.reserved.append(prenotice)
         logger.debug(f"{prenotice} is append reserved list")
         await asyncio.sleep(delay)
-        channel = self.bot.get_channel(self.config.getint('channel'))
+        channel = self.bot.get_channel(self.config.getint('prenotice_channel'))
         embed = discord.Embed(title=prenotice.get('title'))
         advance = prenotice.get("advance")
         if 'value' not in prenotice:
@@ -81,6 +98,16 @@ class Prenotice(commands.Cog):
                 embed.add_field(name=prenotice.get('boss'),value=value)
                 await msg.edit(embed=embed)
         self.reserved.remove(prenotice)
+    async def set_next_boss(self, prenotice, delete_after):
+        channel = self.bot.get_channel(self.config.getint('next_boss_channel'))
+        logger.debug(f"next boss channel: {channel.id}")
+        logger.debug(f"delete_after: {delete_after}s, type: {type(delete_after)}")
+        thumbnail = self.json_data.get("boss").get(prenotice.get("boss"))
+        embed = discord.Embed(title="次ボス")
+        embed.add_field(name=f"{prenotice.get('hour')} : {prenotice.get('minute')}", value=f"**{prenotice.get('boss')}**")
+        embed.set_thumbnail(url=thumbnail)
+        msg = await channel.send(embed=embed, delete_after=delete_after)
+        pass
     @commands.Cog.listener()
     async def on_ready(self):
         await self.loop.start()

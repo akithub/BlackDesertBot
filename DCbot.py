@@ -45,6 +45,10 @@ if not os.path.isfile('config.ini'):
         'output_channel_id': '',
         'voice_channel_id': '',
     }
+    config_parser['PRENOTICE'] = {
+        'next_boss_channel_id': '',
+        'prenotice_channel_id': '',
+    }
     with open('config.ini', 'w') as configfile:
         config_parser.write(configfile)
 
