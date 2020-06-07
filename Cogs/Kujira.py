@@ -13,7 +13,7 @@ class Kujira(commands.Cog):
         Se {0[Se1]} {0[Se2]} {0[Se3]} {0[Se4]}
         Me {0[Me1]} {0[Me2]} {0[Me3]} {0[Me4]}
         Va {0[Va1]} {0[Va2]} {0[Va3]} {0[Va4]}
-        Mg {0[Mg1]} {0[Mg2]} {0[Mg4]} {0[Mg4]}
+        Mg {0[Mg1]} {0[Mg2]} {0[Mg3]} {0[Mg4]}
         ka {0[Ka1]} {0[Ka2]} {0[Ka3]}
         """
         self.reacted_mes_ids = []
