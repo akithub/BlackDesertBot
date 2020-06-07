@@ -105,7 +105,7 @@ class Prenotice(commands.Cog):
         thumbnail = self.json_data.get("boss").get(prenotice.get("boss"))
         embed = discord.Embed(title="次ボス")
         embed.add_field(name=f"{prenotice.get('hour')} : {prenotice.get('minute'):02}", value=f"**{prenotice.get('boss')}**")
-        embed.set_thumbnail(url=thumbnail)
+        embed.set_image(url=thumbnail)
         msg = await channel.send(embed=embed, delete_after=delete_after)
         pass
     @commands.Cog.listener()
