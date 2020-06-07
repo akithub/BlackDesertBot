@@ -42,6 +42,7 @@ class Kujira(commands.Cog):
     @commands.command()
     async def kujira(self, ctx):
         print('kujira command')
+        self.init_state()
         self.checked_mes = await ctx.message.channel.send(self.mes.format(self.state))
         self.title_mes = await ctx.message.channel.send('=============================\n未捜索CH')
         target_CH = {'Ba':4, 'Se':4, 'Me':4, 'Va':4, 'Mg':4, 'Ka':3}
