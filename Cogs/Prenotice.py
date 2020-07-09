@@ -69,7 +69,8 @@ class Prenotice(commands.Cog):
             min_delta = min([self.next_prenotice_datetime(now, prenotice) - now for prenotice in self.json_data.get('schedule')])
             self.next_boss = [prenotice for prenotice in self.json_data.get('schedule') if self.next_prenotice_datetime(now, prenotice) - now == min_delta]
             for prenotice in self.next_boss:
-                await self.set_next_boss(prenotice, min_delta.total_seconds())
+                # 次のボスを表示する, ボス出現から15分後に自動消滅
+                await self.set_next_boss(prenotice, min_delta.total_seconds() + 60*15)
             await asyncio.sleep(min_delta.total_seconds())
             logger.debug("boss list clear")
             self.next_boss = []
