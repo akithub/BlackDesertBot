@@ -11,6 +11,7 @@ class Kujira(commands.Cog):
         捜索完了CH：
         Ba {0[Ba1]} {0[Ba2]} {0[Ba3]} {0[Ba4]}
         Se {0[Se1]} {0[Se2]} {0[Se3]} {0[Se4]}
+        Ca {0[Ca1]} {0[Ca2]} {0[Ca3]} {0[Ca4]}
         Me {0[Me1]} {0[Me2]} {0[Me3]} {0[Me4]}
         Va {0[Va1]} {0[Va2]} {0[Va3]} {0[Va4]}
         Mg {0[Mg1]} {0[Mg2]} {0[Mg3]} {0[Mg4]}
@@ -27,6 +28,7 @@ class Kujira(commands.Cog):
         self.state = {
             'Ba1': '', 'Ba2': '', 'Ba3':'', 'Ba4': '',
             'Se1': '', 'Se2': '', 'Se3':'', 'Se4': '',
+            'Ca1': '', 'Ca2': '', 'Ca3':'', 'Ca4': '',
             'Me1': '', 'Me2': '', 'Me3':'', 'Me4': '',
             'Va1': '', 'Va2': '', 'Va3':'', 'Va4': '',
             'Mg1': '', 'Mg2': '', 'Mg3':'', 'Mg4': '',
@@ -45,7 +47,7 @@ class Kujira(commands.Cog):
         self.init_state()
         self.checked_mes = await ctx.message.channel.send(self.mes.format(self.state))
         self.title_mes = await ctx.message.channel.send('=============================\n未捜索CH')
-        target_CH = {'Ba':4, 'Se':4, 'Me':4, 'Va':4, 'Mg':4, 'Ka':3}
+        target_CH = {'Ba':4, 'Se':4, 'Ca':4, Me':4, 'Va':4, 'Mg':4, 'Ka':3}
         # self.reacted_mes_ids = {msgb.id:'Ba', msgs.id:'Se', msgme.id:'Me', msgv.id:'Va', msgmg.id:'Mg', msgk.id:'Ka'}
         self.reacted_mes_ids = {await self._generate_reacted_message_id(ch, number, ctx):ch for ch, number in target_CH.items()}
     
