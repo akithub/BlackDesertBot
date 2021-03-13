@@ -47,7 +47,7 @@ class Kujira(commands.Cog):
         self.init_state()
         self.checked_mes = await ctx.message.channel.send(self.mes.format(self.state))
         self.title_mes = await ctx.message.channel.send('=============================\n未捜索CH')
-        target_CH = {'Ba':4, 'Se':4, 'Ca':4, Me':4, 'Va':4, 'Mg':4, 'Ka':3}
+        target_CH = {'Ba':4, 'Se':4, 'Ca':4, 'Me':4, 'Va':4, 'Mg':4, 'Ka':3}
         # self.reacted_mes_ids = {msgb.id:'Ba', msgs.id:'Se', msgme.id:'Me', msgv.id:'Va', msgmg.id:'Mg', msgk.id:'Ka'}
         self.reacted_mes_ids = {await self._generate_reacted_message_id(ch, number, ctx):ch for ch, number in target_CH.items()}
     
